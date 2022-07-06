@@ -1,5 +1,8 @@
 <?php
 
+use App\Entity\Currency;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class CurrencyService
@@ -11,14 +14,30 @@ class CurrencyService
         $this->client = $client;
     }
 
-    public function getCurrencyFromNbp(): array
+    public function getCurrencyFromNbp(HttpClientInterface $httpClient, ManagerRegistry $doctrine): Response
     {
-        $response = $this->client->request('GET', 'http://api.nbp.pl/api/exchangerates/tables/A?format=json');
-        // $statusCode = $response->getStatusCode();
-        $contentType = $response->getHeaders()['content-type'][0];
-        $content = $response->getContent();
-        $content = $response->toArray();
+        $response = $httpClient->request('GET', 'http://api.nbp.pl/api/exchangerates/tables/A?format=json');
+        $data = $response->toArray();
+        $currencies = $data[0]['rates'];
+        $currency = $currencies[1];
 
-        return $content;
+        try {
+            for ($i = 1; $i < $currencies[$i]; $i++) {
+                $name = strval($currencies[$i]['currency']);
+                $currency_code = strval($currencies[$i]['code']);
+                $exchange_rate = strval($currencies[$i]['mid']);
+
+                $entityManager = $doctrine->getManager();
+                $currency = new Currency();
+                $currency->setName($name);
+                $currency->setCurrencyCode($currency_code);
+                $currency->setExchangeRate($exchange_rate);
+                $entityManager->persist($currency);
+                $entityManager->flush();
+            }
+        } catch (Exception $e) {
+        }
+
+        return new Response("sss"); 
     }
 }

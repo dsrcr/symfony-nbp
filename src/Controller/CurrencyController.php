@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use CurrencyService;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -23,17 +24,23 @@ class CurrencyController extends AbstractController
         $currencies = $data[0]['rates'];
         $currency = $currencies[1];
 
-        $name = strval($currency['currency']);
-        $currency_code = strval($currency['code']);
-        $exchange_rate = strval($currency['mid']);
+        try {
+            for ($i = 0; $i < $currencies[$i]; $i++) {
+                $name = strval($currencies[$i]['currency']);
+                $currency_code = strval($currencies[$i]['code']);
+                $exchange_rate = strval($currencies[$i]['mid']);
 
-        $entityManager = $doctrine->getManager();
-            $currency = new Currency();
-            $currency->setName($name);
-            $currency->setCurrencyCode($currency_code);
-            $currency->setExchangeRate($exchange_rate);
-            $entityManager->persist($currency);
-            $entityManager->flush();
-        return new Response('The currencies has been added'); 
+                $entityManager = $doctrine->getManager();
+                $currency = new Currency();
+                $currency->setName($name);
+                $currency->setCurrencyCode($currency_code);
+                $currency->setExchangeRate($exchange_rate);
+                $entityManager->persist($currency);
+                $entityManager->flush();
+            }
+        } catch (Exception $e) {
+        }
+        
+        return new Response("sss"); 
     }
 }
