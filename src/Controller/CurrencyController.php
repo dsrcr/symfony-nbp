@@ -4,13 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Currency;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 use CurrencyService;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -32,15 +30,19 @@ class CurrencyController extends AbstractController
 
                 $entityManager = $doctrine->getManager();
                 $currency = new Currency();
-                $currency->setName($name);
-                $currency->setCurrencyCode($currency_code);
-                $currency->setExchangeRate($exchange_rate);
-                $entityManager->persist($currency);
-                $entityManager->flush();
+
+                if (empty($currency->getName() == $name)) {
+                    $currency->setName($name);
+                    $currency->setCurrencyCode($currency_code);
+                    $currency->setExchangeRate($exchange_rate);
+                    $entityManager->persist($currency);
+                    $entityManager->flush();
+                } else {
+                    $currency->setExchangeRate($exchange_rate);
+                }
             }
-        } catch (Exception $e) {
-        }
-        
-        return new Response("sss"); 
+        } catch (Exception $e) {}
+
+        return new Response("Success");
     }
 }

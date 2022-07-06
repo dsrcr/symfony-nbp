@@ -1,9 +1,11 @@
 <?php
 
 use App\Entity\Currency;
+use App\Repository\CurrencyRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 
 class CurrencyService
 {
@@ -22,6 +24,9 @@ class CurrencyService
         $currency = $currencies[1];
 
         try {
+            if (Currency) {
+                # code...
+            }
             for ($i = 1; $i < $currencies[$i]; $i++) {
                 $name = strval($currencies[$i]['currency']);
                 $currency_code = strval($currencies[$i]['code']);
@@ -38,6 +43,6 @@ class CurrencyService
         } catch (Exception $e) {
         }
 
-        return new Response("sss"); 
+        return new Response("sss");
     }
 }
