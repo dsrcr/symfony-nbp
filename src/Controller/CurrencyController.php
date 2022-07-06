@@ -20,7 +20,6 @@ class CurrencyController extends AbstractController
     {
         $response = $httpClient->request('GET', 'http://api.nbp.pl/api/exchangerates/tables/A?format=json');
         $data = $response->toArray();
-        dd($data);
-        return $data;
+        dd($data[0]['rates']);
     }
 }
