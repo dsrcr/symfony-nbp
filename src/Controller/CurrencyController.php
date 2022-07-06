@@ -9,32 +9,18 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use CurrencyService;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class CurrencyController extends AbstractController
 {
-    #[Route('/currency', name: 'app_currency')]
-    public function index(): JsonResponse
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/CurrencyController.php',
-        ]);
-    }
-
     #[Route('/addnewcurrency', name: 'app_currency')]
-    public function addNewCurrency(ManagerRegistry $doctrine): Response
+    public function addNewCurrency(HttpClientInterface $httpClient): array
     {
-
-        $entityManager = $doctrine->getManager();
-
-        $product = new Currency();
-        $product->setName('bat (Tajlandia)');
-        $product->setCurrencyCode('THB');
-        $product->setExchangeRate(0.1298);
-        $entityManager->persist($product);
-        $entityManager->flush();
-
-        return new Response('Saved new currency with id ' . $product->getId());
+        $response = $httpClient->request('GET', 'http://api.nbp.pl/api/exchangerates/tables/A?format=json');
+        $data = $response->toArray();
+        dd($data);
+        return $data;
     }
 }

@@ -13,7 +13,7 @@ class CurrencyService
 
     public function getCurrencyFromNbp(): array
     {
-        $response = $this->client->request('GET', 'http://api.nbp.pl/api/exchangerates/tables/A');
+        $response = $this->client->request('GET', 'http://api.nbp.pl/api/exchangerates/tables/A?format=json');
         // $statusCode = $response->getStatusCode();
         $contentType = $response->getHeaders()['content-type'][0];
         $content = $response->getContent();
