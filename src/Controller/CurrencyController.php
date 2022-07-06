@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-use App\Entity\Product;
+use CurrencyService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -37,6 +37,4 @@ class CurrencyController extends AbstractController
 
         return new Response('Saved new currency with id ' . $product->getId());
     }
-
-
 }
